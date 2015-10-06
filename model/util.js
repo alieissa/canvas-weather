@@ -1,5 +1,7 @@
 
-/**/
+/*------------------------------------------------------------
+| Flattens two objects into one
+--------------------------------------------------------------*/
 
 function concatenateObjects(obj1, obj2) {
 	var result = {};
@@ -15,8 +17,9 @@ function concatenateObjects(obj1, obj2) {
 	return result;
 }
 
-/*
-*/
+/*------------------------------------------------------------
+| Creates a shallow copy of array
+--------------------------------------------------------------*/
 
 function cloneArray (array) {
 	try {
@@ -27,8 +30,10 @@ function cloneArray (array) {
 
 	}
 }
-/*
-*/
+
+/*------------------------------------------------------------
+| Given a weather condition ID returns the condition
+--------------------------------------------------------------*/
 
 function getIDCondition(id) {
 	if (id >= 200 && id < 300){

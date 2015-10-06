@@ -33,7 +33,7 @@ function run_app() {
 		throw 'No Canvas Found';
 	}
 
-	var weather_widget = new Weather_Widget(canvas, 'Ottawa');
+	var weather_widget = new Weather_Widget(canvas, 'Tokyo');
 	weather_widget.run();
 
 }
