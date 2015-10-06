@@ -1,3 +1,7 @@
+//TODO: Use returned timestamp to find day of the week. Remember that the timestamp is in seconds
+// and javascript takes the timestamps in milliseconds so *1000.
+// new Date(timestamp*1000).getDay(). This way one is not limited to local weather
+
 //TODO: Remove isLastDay from Forecast_Model prototype. It should be added to utils
 //TODO: Maybe it's time to turn to underscore.js or lodash.js
 //TODO: Move Data retrieval and processing to server
@@ -161,11 +165,6 @@ Forecast_Model.prototype.getWeekForecast = function() {
 
 	return forecast;
 }
-
-
-// Forecast_Model.prototype.setWeekForecast = function(forecast) {
-// 	this.week_forecast = forecast;
-// }
 
 
 Forecast_Model.prototype.isLastDay = function(day_num) {
