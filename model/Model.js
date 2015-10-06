@@ -7,7 +7,7 @@
 //TODO: Remove isLastDay from Forecast_Model prototype. It should be added to utils
 //TODO: Maybe it's time to turn to underscore.js or lodash.js
 //TODO: Move Data retrieval and processing to server
-//TODO: Change how user exceptions are thrown
+// //TODO: Change how user exceptions are thrown
 
 'use strict'
 
