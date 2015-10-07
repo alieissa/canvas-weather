@@ -6,6 +6,7 @@
 -------------------------------------------------------------*/
 
 function clean(x, y, width, height, ctx) {
+
 	ctx.save();
 	ctx.beginPath();
 	ctx.fillStyle = "white";
@@ -22,6 +23,7 @@ function clean(x, y, width, height, ctx) {
 ---------------------------------------------------*/
 
 function scaleTemps (temps, max, min) {
+	
 	if(!Array.isArray(temps)) {
 		return;
 	}
@@ -50,7 +52,7 @@ function getHour (hour) {
 		case 0:
 			return '12 AM';
 		case 12:
-			return '12 PM'
+			return '12 PM';
 		default:
 			var evening_hour = (hour % 12); 
 			return hour > 12 ? evening_hour + ' PM' : hour + ' AM';

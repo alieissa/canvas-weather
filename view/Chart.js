@@ -14,7 +14,7 @@ function plotTemperatures(temps, forecast_max, forecast_min) {
 	var scaled_temps = v_util.scaleTemps(temps, forecast_max, forecast_min);
 
 	var plotScaledTemp = function(scaled_temp, index, array) {
-		var point = {}
+		var point = {};
 		point.index = index;
 		point.width = self.width /7;
 		point.height = self.height /2;
@@ -44,7 +44,7 @@ function plotTemperatures(temps, forecast_max, forecast_min) {
 		ctx.stroke();
 
 		self.temp_points.push(point);
-	}
+	};
 	
 	scaled_temps.forEach(plotScaledTemp);
 }
@@ -104,11 +104,11 @@ Chart.prototype.getFrame = function() {
 	frame.height = this.height;
 	
 	return frame;
-}
+};
 
 Chart.prototype.getTempCoords = function() {
 	return this.temp_points;
-}
+};
 
 Chart.prototype.plot = function(hours, temperatures, forecast_max, forecast_min) {
 	var ctx = this.ctx;
@@ -118,6 +118,6 @@ Chart.prototype.plot = function(hours, temperatures, forecast_max, forecast_min)
 	
 	plotHours.call(this, hours);
 	plotTemperatures.call(this, temperatures, forecast_max, forecast_min);
-}
+};
 
 module.exports = Chart;

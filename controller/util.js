@@ -21,7 +21,7 @@ function processWeekForecast (raw_forecast) {
 
 		maxima.push(day_max);
 		minima.push(day_min);
-	}
+	};
 	
 	raw_forecast.forEach(findMinMax);
 

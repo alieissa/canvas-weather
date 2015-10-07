@@ -116,7 +116,7 @@ function createFramelets(canvas, frame) {
 		framelet.day_num = (day_num + index) % 7;
 
 		return framelet;
-	}
+	};
 
 	// Create empty array with null elements. .map doesn't work with 'holes'
 	// Pass the frame as 'this' for createFramelet function
@@ -124,7 +124,7 @@ function createFramelets(canvas, frame) {
 	var framelets = Array.apply(null, Array(FRAMELET_NUM));
 	framelets = framelets.map(createFramelet, frame);
 	
-	return framelets
+	return framelets;
 	
 }
 
@@ -132,7 +132,7 @@ var bottom = {};
 bottom.y = 375;
 bottom.x = 0.15*CANVAS_WIDTH;
 
-bottom.height = 100
+bottom.height = 100;
 bottom.width = 0.7*CANVAS_WIDTH;
 bottom.framelets = createFramelets(canvas, bottom);
 bottom.displayFrameletDay = displayFrameletDay.bind(bottom);
@@ -351,7 +351,7 @@ main.displayWeatherIcon = displayMainWeatherIcon.bind(main);
 
 module.exports = function(canvas) {
 	canvas = canvas;
+	console.log(canvas);
 	ctx = canvas.getContext('2d');
-
 	return {main: main, bottom: bottom};
-}
+};
