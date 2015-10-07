@@ -45,18 +45,17 @@ Forecast_Model.prototype.init = function(city) {
 		console.log('time zone response');
 
 		try{
+
 			var tz_res = JSON.parse(this.responseText);	
-			self.tz_offset = tz_res.gmtOffset*1000;
+			self.tz_offset = tz_res.gmtOffset;
 			var local_day_time = util.getLocalDayTime(self.tz_offset);
 
-			
 		}
 		catch(exc) {
 			console.log('Something is wrong');
 		}
 		
 		self.current_forecast = util.processCurrentForecast(self.current_forecast, local_day_time);
-		console.log(self.current_forecast);
 
 		var forecast_req = new XMLHttpRequest();
 		forecast_req.open('GET', forecast_url, true);
@@ -76,8 +75,17 @@ Forecast_Model.prototype.init = function(city) {
 		}
 		
 		console.log(raw_forecast);
-		
-		self.week_forecast = util.processWeekForecast(raw_forecast);
+		// var p_week_forecast = [];
+		// raw_forecast.forEach(function(forecast, index, array){
+		// 	var local_day_time = util.getLocalDayTime(self.tz_offset);
+		// 	p_week_forecast.push(util.processCurrentForecast(forecast, local_day_time));
+		// });
+
+
+		self.week_forecast = util.processWeekForecast(raw_forecast, self.tz_offset/3600);
+		//self.week_forecast = util.processWeekForecast(p_week_forecast);
+		// console.log('self.week_forecast');
+		// console.log(self.week_forecast);
 		document.dispatchEvent(self.forecast_ready);
 	}
 
@@ -93,7 +101,7 @@ Forecast_Model.prototype.init = function(city) {
 		try {
 
 			self.current_forecast = JSON.parse(this.responseText);
-			console.log(self.current_forecast);
+			//console.log(self.current_forecast);
 			var lat = self.current_forecast.coord.lat;
 			var lng = self.current_forecast.coord.lon;
 
@@ -135,8 +143,8 @@ Forecast_Model.prototype.init = function(city) {
 
 Forecast_Model.prototype.getDayForecast = function(day_num) {
 
-	var forecast = util.cloneArray(this.getWeekForecast());
-
+	var forecast = this.getWeekForecast();
+	console.log('getDayForecast Called')
 	var day_forecast = forecast.filter(function(day_forecast, index, array) {
 		return day_forecast[0].day_num === day_num;
 	});
@@ -192,6 +200,7 @@ Forecast_Model.prototype.getWeekForecast = function() {
 
 	var forecast = util.cloneArray(this.week_forecast);
 
+	console.log(forecast);
 	if(forecast.length < 5) {
 		throw 'ERROR: Week Forecast Incomplete';
 	}

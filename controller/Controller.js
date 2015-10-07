@@ -85,10 +85,13 @@ function handleFrameletClick(mouse_pos_x, mouse_pos_y) {
 	var framelets = this.forecast_view.getBottomFrame().framelets;
 	var day_num = c_util.findSelectedDay(mouse_pos_x, mouse_pos_y, framelets);
 	
+	// console.log('day num');
+	// console.log(day_num);
 	var day_high = this.forecast.filter(function(high, index, array) {
 		return high.day_num === day_num; 
 	});
-
+	// console.log('day high');
+	// console.log(day_high);
 	renderMainFrame.call(this, day_high[0]);
 
 	var chart_data = getChartData.call(this, day_num);
@@ -198,13 +201,24 @@ Forecast_Controller.prototype.setEventListeners = function() {
 
 	}
 
-	var handleWeather = function(event) {
+	var handleForecast = function(event) {
 		var max_temp = self.forecast_model.getForecastMax();
 		var min_temp = self.forecast_model.getForecastMin();
+
 		self.forecast_view.setForecastMaxMin(max_temp, min_temp);
 
 		var forecast = self.forecast_model.getWeekForecast();
+		if(typeof forecast[0][0].day_num === 'undefined') {
+			//throw error here
+		}
+
 		var now_forecast = forecast[0][0];
+
+		//Update the day_num with the user defined city day_num
+		self.forecast_view.getBottomFrame().framelets.forEach(function(framelet, index, array){
+			framelet.day_num = (now_forecast.day_num + index) % 7;
+		}); 
+
 		var day_forecast_highs = c_util.processWeekForecast(forecast);
 		self.forecast = day_forecast_highs;
 
@@ -219,7 +233,7 @@ Forecast_Controller.prototype.setEventListeners = function() {
 	var canvas = this.forecast_view.getCanvas();
 	canvas.addEventListener('mousemove', handleMousemove);
 	canvas.addEventListener('mousedown', handleMousedown);
-	document.addEventListener('forecast_ready', handleWeather); 
+	document.addEventListener('forecast_ready', handleForecast); 
 
 }
 

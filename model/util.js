@@ -22,10 +22,12 @@ function concatenateObjects(obj1, obj2) {
 --------------------------------------------------------------*/
 
 function cloneArray (array) {
+
 	try {
 		return JSON.parse(JSON.stringify(array));
 	}
 	catch(exception) {
+		console.log(exception);
 		throw 'ERROR: Can not clone array';
 
 	}
@@ -66,7 +68,7 @@ function getIDCondition(id) {
 /*
 */
 
-function processWeekForecast(raw_forecast) {
+function processWeekForecast(raw_forecast, hour_offset) {
 
 	var week_forecast = [];
 
@@ -74,8 +76,8 @@ function processWeekForecast(raw_forecast) {
 		var date_str = hour_data.dt_txt.replace(' ', 'T');
 		var date = new Date(date_str);
 		var day_num = date.getDay();
-		var hour = date.getHours();
-
+		var hour = (date.getHours() + date.getTimezoneOffset()*6000 + hour_offset) % 24 ;
+		if (hour <= 12) day_num = (day_num + 1) % 7;
 		var processed_hour_data = concatenateObjects(hour_data.main, hour_data.weather[0]);
 		
 		processed_hour_data.hour = hour;
@@ -90,16 +92,22 @@ function processWeekForecast(raw_forecast) {
 	// Extract all the dates in yyyy-mmm-ddThhh:mm:ss format;
 	var clean_forecast = raw_forecast.map(processHourForecast);
 
+
 	var days = clean_forecast.map(function(day_forecast, index, array) {
 		return day_forecast.day_num;
 	});
+
+	console.log('Days');
+	console.log(days);
 
 	// Find all the unique days
 	var uniq_days = days.filter(function(day, index, array) {
 		return array.indexOf(day) === index;
 	});
 
-	
+	console.log('Unique Days');
+	console.log(uniq_days);
+
 	uniq_days.forEach(function(uniq_day, index, array) {
 
 		// find all the forecast for uniq_day
@@ -114,14 +122,15 @@ function processWeekForecast(raw_forecast) {
 		week_forecast.push(day_forecast);
 	});
 	
+	console.log('Week Forecast Processed');
 	console.log(week_forecast);
-	return week_forecast
+	return week_forecast;
 
 }
 
 function processCurrentForecast (raw_current_data, day_time) {
 	//var date = new Date();
-	console.log(day_time);
+	//console.log(day_time);
 
 	var processed_data = concatenateObjects(raw_current_data.main, raw_current_data.weather[0]);
 	processed_data.hour = day_time.hour;
@@ -135,19 +144,20 @@ function processCurrentForecast (raw_current_data, day_time) {
 }
 
 function getLocalDayTime (offset) {
-	var date = new Date();
+	var d = new Date();
 
 	// timezone offset in minutes, getTime in milliseconds
-	var utc = date.getTime() - date.getTimezoneOffset()*60000;
+	var utc = d.getTime() + d.getTimezoneOffset()*60000;
 
-	var local_date = new Date(utc + offset);
+	var local_date = new Date(utc + (offset*1000));
 
-	console.log(local_date.toLocaleString());
-	console.log('Hour is: ' + local_date.getHours());
-	console.log('Week Day is: ' + local_date.getDay());
-	console.log('Day of Month is: ' + local_date.getDate());
-	console.log('Month is: ' + (local_date.getMonth() + 1));
-	console.log('Year is: ' + local_date.getFullYear());
+	// console.log(offset/3600);
+	// console.log(local_date.toLocaleString());
+	// console.log('Hour is: ' + local_date.getHours());
+	// console.log('Week Day is: ' + local_date.getDay());
+	// console.log('Day of Month is: ' + local_date.getDate());
+	// console.log('Month is: ' + (local_date.getMonth() + 1));
+	// console.log('Year is: ' + local_date.getFullYear());
 
 	return {hour: local_date.getHours(), day_num: local_date.getDay()};
 }
