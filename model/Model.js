@@ -22,6 +22,8 @@ function Forecast_Model() {
 	this.forecast_max;
 	this.forecast_min;
 
+	this.tz_offset;
+
 	this.forecast_ready = new Event("forecast_ready");
 	this.weather_ready = new Event("weather_ready");
 
@@ -38,6 +40,32 @@ Forecast_Model.prototype.init = function(city) {
 	var weather_url =  'http://api.openweathermap.org/data/2.5/weather?units=metric&q=' + city + '&APPID=' + API_KEY;
 	var forecast_url = 'http://api.openweathermap.org/data/2.5/forecast?units=metric&q=' + city + '&APPID=' + API_KEY;
 	
+	
+	var handleTzResponse = function(evt) {
+		console.log('time zone response');
+
+		try{
+			var tz_res = JSON.parse(this.responseText);	
+			self.tz_offset = tz_res.gmtOffset*1000;
+			var local_day_time = util.getLocalDayTime(self.tz_offset);
+
+			
+		}
+		catch(exc) {
+			console.log('Something is wrong');
+		}
+		
+		self.current_forecast = util.processCurrentForecast(self.current_forecast, local_day_time);
+		console.log(self.current_forecast);
+
+		var forecast_req = new XMLHttpRequest();
+		forecast_req.open('GET', forecast_url, true);
+		forecast_req.addEventListener('load', handleForecast);
+		forecast_req.send();
+
+		//self.current_forecast = util.processCurrentForecast(current_forecast);
+	}
+
 	var handleForecast = function() {
 		try {
 			var raw_forecast = JSON.parse(this.responseText).list;
@@ -46,6 +74,8 @@ Forecast_Model.prototype.init = function(city) {
 			// this.controller.reportError()
 			console.log(exception);
 		}
+		
+		console.log(raw_forecast);
 		
 		self.week_forecast = util.processWeekForecast(raw_forecast);
 		document.dispatchEvent(self.forecast_ready);
@@ -62,25 +92,43 @@ Forecast_Model.prototype.init = function(city) {
 
 		try {
 
-			var current_forecast = JSON.parse(this.responseText);
+			self.current_forecast = JSON.parse(this.responseText);
+			console.log(self.current_forecast);
+			var lat = self.current_forecast.coord.lat;
+			var lng = self.current_forecast.coord.lon;
+
+			var tz_url = 'http://api.timezonedb.com/?lat=' + lat + '&lng=' + lng +'&format=json&key=3K51HXQHY2WC';
+
+			//var current_forecast = JSON.parse(this.responseText);
 		}
 		catch(exception) {
 			//controller.reportError("Can't Parse Open Weather Response");
 			console.log('can not parse current weather response');
 		}
 
-		var forecast_req = new XMLHttpRequest();
-		forecast_req.open('GET', forecast_url, true);
-		forecast_req.addEventListener('load', handleForecast);
-		forecast_req.send();
+		var tz_req = new XMLHttpRequest();
+		tz_req.open('GET', tz_url, true);
+		tz_req.addEventListener('load', handleTzResponse);
+		tz_req.addEventListener('error', function(evt){
+			console.log('No response from tz database');
+		});
+		tz_req.send();
 
-		self.current_forecast = util.processCurrentForecast(current_forecast);
+		// var forecast_req = new XMLHttpRequest();
+		// forecast_req.open('GET', forecast_url, true);
+		// forecast_req.addEventListener('load', handleForecast);
+		// forecast_req.send();
+
+		// self.current_forecast = util.processCurrentForecast(current_forecast);
 
 	}
 
 	var weather_req = new XMLHttpRequest();
 	weather_req.open("GET", weather_url, true);
 	weather_req.addEventListener('load', handleWeather);
+	weather_req.addEventListener('error', function(evt){
+		console.log('Weather call error');
+	});
 	weather_req.send();
 }
 

@@ -119,12 +119,13 @@ function processWeekForecast(raw_forecast) {
 
 }
 
-function processCurrentForecast (raw_current_data) {
-	var date = new Date();
+function processCurrentForecast (raw_current_data, day_time) {
+	//var date = new Date();
+	console.log(day_time);
 
 	var processed_data = concatenateObjects(raw_current_data.main, raw_current_data.weather[0]);
-	processed_data.hour = date.getHours();
-	processed_data.day_num = date.getDay();
+	processed_data.hour = day_time.hour;
+	processed_data.day_num = day_time.day_num;
 	processed_data.temp = Math.round(processed_data.temp);
 	processed_data.temp_max = Math.round(processed_data.temp_max);
 	processed_data.temp_min = Math.round(processed_data.temp_min);
@@ -133,8 +134,27 @@ function processCurrentForecast (raw_current_data) {
 	return processed_data;
 }
 
+function getLocalDayTime (offset) {
+	var date = new Date();
+
+	// timezone offset in minutes, getTime in milliseconds
+	var utc = date.getTime() - date.getTimezoneOffset()*60000;
+
+	var local_date = new Date(utc + offset);
+
+	console.log(local_date.toLocaleString());
+	console.log('Hour is: ' + local_date.getHours());
+	console.log('Week Day is: ' + local_date.getDay());
+	console.log('Day of Month is: ' + local_date.getDate());
+	console.log('Month is: ' + (local_date.getMonth() + 1));
+	console.log('Year is: ' + local_date.getFullYear());
+
+	return {hour: local_date.getHours(), day_num: local_date.getDay()};
+}
+
 var util = {};
 util.cloneArray = cloneArray;
+util.getLocalDayTime = getLocalDayTime;
 util.concatenateObjects = concatenateObjects;
 util.processWeekForecast = processWeekForecast;
 util.processCurrentForecast = processCurrentForecast;
