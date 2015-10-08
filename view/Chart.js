@@ -3,18 +3,21 @@ var PLOT_HEIGHT = 80;
 var v_util = require('./util.js');
 
 function plotTemperatures(temps, forecast_max, forecast_min) {
+
 	var self = this;
-	var ctx = this.ctx;
-	var offset = this.width /7;
-	var label_offset = (this.width - 10) /7;
+
+	var ctx = self.ctx;
+	var offset = self.width /7;
+	var label_offset = (self.width - 10) /7;
 	
 	//Clear the old points
-	this.temp_points = [];
-	//v_util.clean(this.plot_area.x - 10, this.plot_area.y - 20, this.plot_area.width + 20, this.plot_area.height + 30, this.ctx)
+	self.temp_points = [];
+
 	var scaled_temps = v_util.scaleTemps(temps, forecast_max, forecast_min);
 
+	var point;
 	var plotScaledTemp = function(scaled_temp, index, array) {
-		var point = {};
+		point = {};
 		point.index = index;
 		point.width = self.width /7;
 		point.height = self.height /2;

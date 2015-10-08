@@ -81,6 +81,10 @@ Forecast_Model.prototype.init = function(city) {
 };
 
 
+/*---------------------------------------------------------------------------
+| Returns day forecast for week day
+------------------------------------------------------------------------------*/
+
 Forecast_Model.prototype.getDayForecast = function(day_num) {
 
 	var forecast = this.getWeekForecast();
@@ -135,6 +139,11 @@ Forecast_Model.prototype.getForecastMax = function() {
 	return max;
 };
 
+
+/*---------------------------------------------------------------------------
+| Returns entire week forecast. It has first clone array, because the
+| forecast is an array of arrays
+------------------------------------------------------------------------------*/
 
 Forecast_Model.prototype.getWeekForecast = function() {
 

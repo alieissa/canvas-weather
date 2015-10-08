@@ -28,6 +28,7 @@ Weather_Widget.prototype.run = function() {
 /*----------------------------------------------------------------------
 | This function can be moved to a script tag outside of app.js.
 -------------------------------------------------------------------------*/
+
 function run_app() {
 	var canvas_weather;
 	try {

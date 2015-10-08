@@ -18,6 +18,7 @@ function concatenateObjects(obj1, obj2) {
 	return result;
 }
 
+
 /*------------------------------------------------------------
 | Creates a shallow copy of array
 --------------------------------------------------------------*/
@@ -33,6 +34,7 @@ function cloneArray (array) {
 
 	}
 }
+
 
 /*------------------------------------------------------------
 | Given a weather condition ID returns the condition
@@ -66,6 +68,7 @@ function getIDCondition(id) {
 
 	throw 'ID' + id + ' is Unknow';
 }
+
 
 /*------------------------------------------------------------
 | Converts an array containing the entire week forecast into 
