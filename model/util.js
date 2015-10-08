@@ -67,8 +67,11 @@ function getIDCondition(id) {
 	throw 'ID' + id + ' is Unknow';
 }
 
-/*
-*/
+/*------------------------------------------------------------
+| Converts an array containing the entire week forecast into 
+| an array of day forecasts. Each day forecast consists 
+| is an array of hourly forecasts.
+--------------------------------------------------------------*/
 
 function processWeekForecast(raw_forecast, hour_offset) {
 
@@ -96,28 +99,22 @@ function processWeekForecast(raw_forecast, hour_offset) {
 	// Extract all the dates in yyyy-mmm-ddThhh:mm:ss format;
 	var clean_forecast = raw_forecast.map(processHourForecast);
 
-
 	var days = clean_forecast.map(function(day_forecast, index, array) {
 		return day_forecast.day_num;
 	});
 
-	console.log('Days');
-	console.log(days);
 
 	// Find all the unique days
 	var uniq_days = days.filter(function(day, index, array) {
 		return array.indexOf(day) === index;
 	});
 
-	console.log('Unique Days');
-	console.log(uniq_days);
 
 	uniq_days.forEach(function(uniq_day, index, array) {
 
 		// find all the forecast for uniq_day
 		var day_forecast = clean_forecast.filter(function(day_forecast, index, array) {
-			var day = day_forecast.day_num;
-			return day === uniq_day;
+			return day_forecast.day_num === uniq_day;
 		});
 
 		/*--------------------------------
@@ -126,11 +123,14 @@ function processWeekForecast(raw_forecast, hour_offset) {
 		week_forecast.push(day_forecast);
 	});
 	
-	console.log('Week Forecast Processed');
-	console.log(week_forecast);
 	return week_forecast;
 
 }
+
+
+/*------------------------------------------------------------
+| Returns an object that has the current day_num and hour
+--------------------------------------------------------------*/
 
 function processCurrentForecast (raw_current_data) {
 

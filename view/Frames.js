@@ -351,7 +351,6 @@ main.displayWeatherIcon = displayMainWeatherIcon.bind(main);
 
 module.exports = function(canvas) {
 	canvas = canvas;
-	console.log(canvas);
 	ctx = canvas.getContext('2d');
 	return {main: main, bottom: bottom};
 };

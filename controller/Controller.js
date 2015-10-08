@@ -1,7 +1,3 @@
-
-//TODO: Handle exceptions thrown by model. 
-//TODO: underscore.js time
-
 /*jshint node: true*/
 
 'use strict';
@@ -13,7 +9,10 @@ var main_icon_settings = require('./icons_settings.js').main_icon_settings;
 var small_icon_settings = require('./icons_settings.js').small_icon_settings;
 var time_display_settings = require('./icons_settings.js').time_display_settings;
 
-// Finds which framelet is clicked and the corresponding day.
+/*------------------------------------------------------------------
+| Finds which framelet is clicked and the corresponding day.
+--------------------------------------------------------------------*/
+
 function getChartData(day_num) {
 	/*jshint validthis: true*/
 
@@ -52,7 +51,6 @@ function getChartData(day_num) {
 		else {
 			processFirstDay();
 		}
-		//self.forecast_model.isLastDay(day_num) ? processLastDay() : processFirstDay();
 	}
 
 	self.day_forecast = day_forecast;
@@ -60,9 +58,14 @@ function getChartData(day_num) {
 	return day_forecast;
 }
 
+/*------------------------------------------------------------------
+| Finds and displays the hourly forecast that corresponds to the
+| location of the click
+--------------------------------------------------------------------*/
 
 function handleChartClick(mouse_pos_x, mouse_pos_y) {
 	/*jshint validthis: true*/
+
 	var self = this;
 
 	var temp_points = self.forecast_view.getChart().getTempCoords();
@@ -83,14 +86,18 @@ function handleChartClick(mouse_pos_x, mouse_pos_y) {
 		return;
 	}
 
-	//Get the hour forecast information form day forecast
+	//Get the hour forecast information from day forecast
 	var hour_index = clicked_hour[0].index;
 	var hour_forecast = self.day_forecast[hour_index];
 	
 	renderMainFrame.call(self, hour_forecast);
-	console.log(hour_forecast);
 }
 
+
+/*------------------------------------------------------------------
+| Finds the clicked day using the location of the click and displays
+| the max hourly forecast for that day on the main frame
+-------------------------------------------------------------------*/
 
 function handleFrameletClick(mouse_pos_x, mouse_pos_y) {
 	/*jshint validthis: true*/
@@ -109,6 +116,11 @@ function handleFrameletClick(mouse_pos_x, mouse_pos_y) {
 	var chart_data = getChartData.call(self, day_num);
 	self.forecast_view.plotDayForecast(chart_data);
 }
+
+
+/*------------------------------------------------------------------
+| Displays the forecast for each day on a framelet
+--------------------------------------------------------------------*/
 
 function renderBottomFrame (day_forecast_highs) {
 	/*jshint validthis: true*/
@@ -133,6 +145,11 @@ function renderBottomFrame (day_forecast_highs) {
 	});
 
 }
+
+
+/*------------------------------------------------------------------
+| Displays the forecast on the main frame
+--------------------------------------------------------------------*/
 
 function renderMainFrame(now_forecast) {
 	/*jshint validthis: true*/
@@ -202,6 +219,7 @@ Forecast_Controller.prototype.setEventListeners = function() {
 	};
 
 	var handleMousemove = function(event) {
+
 		var parent_element = event.target.getBoundingClientRect();
 		
 		var mouse_pos = {};
@@ -223,24 +241,19 @@ Forecast_Controller.prototype.setEventListeners = function() {
 	};
 
 	var handleForecast = function(event) {
+
 		var max_temp = self.forecast_model.getForecastMax();
 		var min_temp = self.forecast_model.getForecastMin();
 
 		self.forecast_view.setForecastMaxMin(max_temp, min_temp);
 
-		var forecast = self.forecast_model.getWeekForecast();
-		if (typeof forecast[0][0].day_num === 'undefined') {
-			//throw error here
-		}
+		var now_forecast = self.forecast_model.getWeekForecast()[0][0];
 
-		var now_forecast = forecast[0][0];
-
-		//Update the day_num with the user defined city day_num
 		self.forecast_view.getBottomFrame().framelets.forEach(function(framelet, index, array){
 			framelet.day_num = (now_forecast.day_num + index) % 7;
 		}); 
 
-		var day_forecast_highs = c_util.processWeekForecast(forecast);
+		var day_forecast_highs = c_util.processWeekForecast(self.forecast_model.getWeekForecast());
 		self.forecast = day_forecast_highs;
 
 

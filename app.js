@@ -29,8 +29,9 @@ Weather_Widget.prototype.run = function() {
 | This function can be moved to a script tag outside of app.js.
 -------------------------------------------------------------------------*/
 function run_app() {
+	var canvas_weather;
 	try {
-		var weather_canvas = document.getElementById('canvas');
+		weather_canvas = document.getElementById('canvas');
 	}
 	catch(exc) {
 		throw 'No Canvas Found';

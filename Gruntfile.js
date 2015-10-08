@@ -34,7 +34,9 @@ module.exports = function(grunt) {
 		// build canvas_weather.js
 		uglify: {
 			min: {
-				'./canvas_weahter.min.js': './canvas_weather.js'
+				files: {
+					'./canvas_weather.min.js': './canvas_weather.js'
+				}
 			}
 		},
 

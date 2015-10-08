@@ -1,16 +1,9 @@
-
-//TODO: Remove isLastDay from Forecast_Model prototype. It should be added to utils
-//TODO: Maybe it's time to turn to underscore.js or lodash.js
-//TODO: Move Data retrieval and processing to server
-// //TODO: Change how user exceptions are thrown
-
 /*jshint node: true*/
 
 'use strict';
 
 var util = require('./util.js');
 var API_KEY = require('./config.js').API_KEY;
-
 
 function Forecast_Model() {
 
@@ -97,8 +90,7 @@ Forecast_Model.prototype.getDayForecast = function(day_num) {
 	
 
 	if (day_forecast.length !== 1) {
-		// Must throw exception here
-		console.log('Day Forecast For ' + day_num + ' is ' + day_forecast.length);
+		throw 'Returned multi-day forecast for ' + day_num;
 	}
 
 	return util.cloneArray(day_forecast[0]);
@@ -110,13 +102,14 @@ Forecast_Model.prototype.getForecastMin = function() {
 	var min = 100;
 	var forecast = this.getWeekForecast();
 	
-	// Maybe it's time to use underscore.js
 	forecast.forEach(function(day_forecast, index, array) {
+
 		day_forecast.forEach(function(hour_forecast, index, array) {
 			if (hour_forecast.temp_min < min) {
 				min = hour_forecast.temp_min;
 			}
 		});
+
 	});
 
 	return min;
@@ -128,10 +121,10 @@ Forecast_Model.prototype.getForecastMax = function() {
 	var max = -100;
 	var forecast = this.getWeekForecast();
 	
-	// Maybe it's time to use underscore.js
 	forecast.forEach(function(day_forecast, index, array) {
 
 		day_forecast.forEach(function(hour_forecast, index, array) {
+
 			if (hour_forecast.temp_max > max) {
 				max = hour_forecast.temp_max;
 			}
@@ -147,7 +140,6 @@ Forecast_Model.prototype.getWeekForecast = function() {
 
 	var forecast = util.cloneArray(this.week_forecast);
 
-	console.log(forecast);
 	if (forecast.length < 5) {
 		throw 'ERROR: Week Forecast Incomplete';
 	}
@@ -160,7 +152,8 @@ Forecast_Model.prototype.getWeekForecast = function() {
 	------------------------------------------------------*/
 
 	var earliest_forecast = forecast[0][0];
-	if(earliest_forecast.day_num !== this.current_forecast.day_num) {
+	if (earliest_forecast.day_num !== this.current_forecast.day_num) {
+		
 		var container = [];
 		container.push(this.current_forecast);
 		forecast.unshift(container);
@@ -173,6 +166,7 @@ Forecast_Model.prototype.getWeekForecast = function() {
 };
 
 Forecast_Model.prototype.isLastDay = function(day_num) {
+
 	var processed_week_forecast = this.week_forecast.slice(0);
 	var last_day_forecast = processed_week_forecast[processed_week_forecast.length - 1];
 

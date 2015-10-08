@@ -1,4 +1,3 @@
-//TODO: More than one framelet_found or no framelet found should throw an erro
 
 
 /*-------------------------------------------------------
@@ -44,10 +43,6 @@ function findSelectedDay(x, y, framelets) {
 		return framelet.x < x && framelet.x + framelet.width > x ;
 	});
 
-	if(found_framelet.length !== 1) {
-		console.log("More than one framelet found for coords x and y");
-		//Should throw error later
-	}
 	return found_framelet[0].day_num;
 }
 
