@@ -6,6 +6,9 @@ var CANVAS_WIDTH = 600;
 var CANVAS_HEIGHT = 465;
 var DATE_BANNER_HEIGHT = 20;
 var MAIN_BANNER_HEIGHT = 80;
+var FRAMELET_ICON_SIZE = 10;
+var MAX_TEMP_COLOUR = '#878787';
+var MIN_TEMP_COLOUR = '#BABABA';
 
 var DAYS = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
 var DAYS_F = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -20,16 +23,18 @@ var canvas;
 --------------------------------------------------------------*/
 
 function displayFrameletDay(day, framelet) {
+
 	ctx.save();
 	ctx.beginPath();
 	ctx.font = '13px Arial';
 	ctx.textAlign = 'center';
 	ctx.textBaseline = 'top';
-	ctx.fillStyle = '#BABABA';
+	ctx.fillStyle = MIN_TEMP_COLOUR;
 	ctx.fillText(DAYS[day], framelet.x + framelet.width /2, framelet.y + 7);
 	ctx.closePath();
 	ctx.restore();
 }
+
 
 /*------------------------------------------------------------
 | Displays the max and min temperatures for a given weekday
@@ -37,44 +42,42 @@ function displayFrameletDay(day, framelet) {
 --------------------------------------------------------------*/
 
 function displayFrameletTemps(temps, framelet) {
-	temps.temp_min = Math.round(temps.temp_min);
-	temps.temp_max = Math.round(temps.temp_max);
 
 	var temp_x = framelet.x + 20;
 	var temp_y = framelet.y + 0.7*framelet.height;
 	
 	ctx.save();
 	ctx.beginPath();
-	ctx.textBaseline = "hanging";
+	ctx.textBaseline = 'top';
 	ctx.font = "13px Arial";
 	ctx.textAlign = "center";
 
 	//max temp
-	ctx.fillStyle = "#878787";
-	ctx.fillText(temps.temp_max, temp_x, temp_y);
+	ctx.fillStyle = MAX_TEMP_COLOUR;
+	ctx.fillText(Math.round(temps.temp_max), temp_x, temp_y);
 
 	//min temp
-	ctx.fillStyle = "#BABABA";
-	ctx.fillText(temps.temp_min, temp_x + 23, temp_y);
+	ctx.fillStyle = MIN_TEMP_COLOUR;
+	ctx.fillText(Math.round(temps.temp_min), temp_x + 23, temp_y);
 	ctx.closePath();
-
 
 	//Degrees
 	ctx.beginPath();
 	ctx.lineWidth = 0.5;
-	ctx.strokeStyle = "#878787";
+	ctx.strokeStyle = MAX_TEMP_COLOUR;
 	ctx.arc(temp_x +10 , temp_y + 2, 2, 0, 2*Math.PI);
 	ctx.stroke();
 	ctx.closePath();
 
 	ctx.beginPath();
-	ctx.strokeStyle = "#BABABA";
+	ctx.strokeStyle = MIN_TEMP_COLOUR;
 	ctx.arc(temp_x + 33 , temp_y + 2, 2, 0, 2*Math.PI);
 	ctx.stroke();
 	ctx.closePath();
 
 	ctx.restore();
 }
+
 
 /*-------------------------------------------------------------
 | Displays a weather icons on a user supplied framelet. The
@@ -83,6 +86,7 @@ function displayFrameletTemps(temps, framelet) {
 ---------------------------------------------------------------*/
 
 function displayFrameletIcon(icon, icon_settings, framelet) { 
+
 	var stroke_size = 3;
 	var icon_size= icon_settings.icon_size;
 	var icon_x = framelet.x + icon_settings.offset_x;
@@ -98,35 +102,32 @@ function displayFrameletIcon(icon, icon_settings, framelet) {
 --------------------------------------------------------------*/
 
 function createFramelets(canvas, frame) {
+
 	var framelet_height = frame.height;
 	var framelet_width = frame.width / FRAMELET_NUM;
+
 	var day_num = new Date().getDay();
 
-	var createFramelet = function(empty, index, array) {
-		var bottom_frame = this;
-		
-		var framelet = {};
-		framelet.y = bottom_frame.y;
+	var framelet = {};
+	var framelets = [];
+	for (var index = 0; index <= FRAMELET_NUM; index++) {		
+
+		framelet.y = frame.y;
 		framelet.x = framelet_width * index + frame.x;
 
 		framelet.width = framelet_width;
 		framelet.height = framelet_height;
 		
-		framelet.icon_size = 10;
+		framelet.icon_size = FRAMELET_ICON_SIZE;
 		framelet.day_num = (day_num + index) % 7;
 
-		return framelet;
-	};
-
-	// Create empty array with null elements. .map doesn't work with 'holes'
-	// Pass the frame as 'this' for createFramelet function
-
-	var framelets = Array.apply(null, Array(FRAMELET_NUM));
-	framelets = framelets.map(createFramelet, frame);
+		framelets.push(framelet);
+	}
 	
 	return framelets;
 	
 }
+
 
 var bottom = {};
 bottom.y = 375;
@@ -140,22 +141,20 @@ bottom.displayFrameletTemps = displayFrameletTemps.bind(bottom);
 bottom.displayFrameletIcon = displayFrameletIcon.bind(bottom);
 
 
-
-
 /*------------------------------------------------------------
 | Displays the city on the main frame. Function is only ever
 | called one; at the beginning controller init
 --------------------------------------------------------------*/
 
 function displayMainCity(city) {
+
 	var city_y = 20;
 	var city_x = this.x;
-	//var ctx = main.ctx;
 
 	ctx.save();
 	ctx.beginPath();
-	ctx.fillStyle = "#878787";
-	ctx.textBaseline = "hanging";
+	ctx.fillStyle = MAX_TEMP_COLOUR;
+	ctx.textBaseline = 'top';
 	ctx.font = "24px Arial";
 	ctx.fillText(city, city_x, city_y);
 	ctx.closePath();
@@ -351,6 +350,7 @@ main.displayWeatherIcon = displayMainWeatherIcon.bind(main);
 
 module.exports = function(canvas) {
 	canvas = canvas;
+	console.log(canvas);
 	ctx = canvas.getContext('2d');
 	return {main: main, bottom: bottom};
 };
