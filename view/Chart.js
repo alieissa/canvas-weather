@@ -2,21 +2,29 @@ var PLOT_HEIGHT = 80;
 
 var v_util = require('./util.js');
 
-function plotTemperatures(temps, forecast_max, forecast_min) {
 
+/*------------------------------------------------------------------
+| Scales the temperatures by ( chart_width / (maxtemp - mintemp) )
+| and plotted on the chart. 
+---------------------------------------------------------------------*/
+
+function plotTemperatures(temps, forecast_max, forecast_min) {
+	
 	var self = this;
 
 	var ctx = self.ctx;
 	var offset = self.width /7;
 	var label_offset = (self.width - 10) /7;
 	
-	//Clear the old points
-	self.temp_points = [];
-
-	var scaled_temps = v_util.scaleTemps(temps, forecast_max, forecast_min);
 
 	var point;
+	var label_x;
+	var label_y; 
+	
+	var scaled_temps = v_util.scaleTemps(temps, forecast_max, forecast_min);
+	
 	var plotScaledTemp = function(scaled_temp, index, array) {
+
 		point = {};
 		point.index = index;
 		point.width = self.width /7;
@@ -27,8 +35,8 @@ function plotTemperatures(temps, forecast_max, forecast_min) {
 		point.y = (self.y + 10) + self.plot_area.height *(1 - scaled_temp) ;
 		
 		//self tucks the temperatures lables a bit inside.
-		var label_x = self.x + index*label_offset;
-		var label_y = point.y - 20;
+		label_y = point.y - 20;
+		label_x = self.x + index*label_offset;
 
 		point.bounds_y = self.y - 10;
 		point.bounds_x = point.x - point.width /2;
@@ -43,8 +51,13 @@ function plotTemperatures(temps, forecast_max, forecast_min) {
 		ctx.closePath();
 		ctx.restore();
 
+		// Write Temp
+		ctx.save();
+		ctx.beginPath();
 		ctx.fillText(temps[index], label_x, label_y);
 		ctx.stroke();
+		ctx.closePath();
+		ctx.restore();
 
 		self.temp_points.push(point);
 	};
@@ -52,11 +65,17 @@ function plotTemperatures(temps, forecast_max, forecast_min) {
 	scaled_temps.forEach(plotScaledTemp);
 }
 
-// Plot the X axis
+
+/*------------------------------------------------------------------
+| Set the plot hours as the x-axis data points.
+---------------------------------------------------------------------*/
+
 function plotHours(hours) {
+
 	var self = this;
-	var ctx = this.ctx;
-	var offset = (this.width - 25) /7;
+
+	var ctx = self.ctx;
+	var offset = (self.width - 25) /7;
 
 	var new_hours = hours.map(function(hour, index, array) {
 		return v_util.getHour(hour);
@@ -77,6 +96,7 @@ function plotHours(hours) {
 
 
 function Chart(x, y, width, height, canvas) {	
+
 	this.canvas = canvas;
 	this.ctx = canvas.getContext('2d');
 	this.x = x;
@@ -99,23 +119,43 @@ function Chart(x, y, width, height, canvas) {
 
 }
 
+
+/*------------------------------------------------------------------
+| Get the chart frame. Used to see if chart clicked
+---------------------------------------------------------------------*/
+
 Chart.prototype.getFrame = function() {
+
 	var frame = {};
 	frame.x = this.x;
 	frame.y = this.y;
+
 	frame.width = this.width;
 	frame.height = this.height;
 	
 	return frame;
 };
 
+/*------------------------------------------------------------------
+| Get the (x, y) coordinates of the plotted temp points. Used
+| to see if a temp point clicked
+---------------------------------------------------------------------*/
+
 Chart.prototype.getTempCoords = function() {
 	return this.temp_points;
 };
 
+
+/*------------------------------------------------------------------
+| Plot the (hours, temperatures) on the chart
+---------------------------------------------------------------------*/
+
 Chart.prototype.plot = function(hours, temperatures, forecast_max, forecast_min) {
-	var ctx = this.ctx;
-	var offset = this.width /7;
+
+	//var offset = this.width /7;
+
+	//Clear the old points
+	this.temp_points = [];
 
 	v_util.clean(this.x - 10, this.y - 40, this.width + 20, 160, this.ctx);
 	
