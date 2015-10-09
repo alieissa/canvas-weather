@@ -161,12 +161,14 @@ function displayMainCity(city) {
 	ctx.restore();
 }
 
+
 /*------------------------------------------------------------
 | Dipslays the weather condition, e.g. cloudy on the main
 | frame.
 --------------------------------------------------------------*/
 
 function displayMainCondition(condition) {
+
 	var cond_y = 70;
 	var cond_x = this.x;
 	
@@ -177,42 +179,45 @@ function displayMainCondition(condition) {
 	if(cond === 'Partly_cloudy') {
 		cond = 'Partly Cloudy';
 	}
-	//-------------------------------------------------------------------------
 
 	util.clean(cond_x, cond_y - 3, CANVAS_WIDTH /2, 20, ctx);
 
 	ctx.save();
 	ctx.beginPath();
 	ctx.textAlign = "left";
-	ctx.textBaseline = "hanging";
+	ctx.textBaseline = 'top';
 	ctx.font = "16px Arial";
-	ctx.fillStyle = "#878787";
+	ctx.fillStyle = MAX_TEMP_COLOUR;
 	ctx.fillText(cond, cond_x, cond_y);
 	ctx.closePath();
 	ctx.restore();
 }
+
 
 /*------------------------------------------------------------
 | Displays non-abreviated weekday on the main frame
 --------------------------------------------------------------*/
 
 function displayMainDay(day_num) {
+
 	var day_y = 50;
 	var day_x = this.x;
+
 	var hour = new Date().getHours();
 	
 	util.clean(day_x, day_y - 3, CANVAS_WIDTH /2, DATE_BANNER_HEIGHT, ctx);
 
 	ctx.save();
 	ctx.beginPath();
-	ctx.textBaseline = "hanging";
+	ctx.textBaseline = 'top';
 	ctx.textAlign = "left";
 	ctx.font = "16px Arial";
-	ctx.fillStyle = "#878787";
+	ctx.fillStyle = MAX_TEMP_COLOUR;
 	ctx.fillText(DAYS_F[day_num], day_x, day_y);
 	ctx.closePath();
 	ctx.restore();
 }
+
 
 /*------------------------------------------------------------
 | Displays humidity, pressure and wind strength on main frame
@@ -224,7 +229,7 @@ function displayMainInfo(humidity, pressure, wind) {
 
 	ctx.save();
 	ctx.beginPath();
-	ctx.fillStyle = "#878787";
+	ctx.fillStyle = MAX_TEMP_COLOUR;
 	ctx.textBaseline = "top";
 	ctx.font = "16px Arial";
 	ctx.textAlign = "left";
@@ -234,7 +239,7 @@ function displayMainInfo(humidity, pressure, wind) {
 
 	ctx.save();
 	ctx.beginPath();
-	ctx.fillStyle = "#878787";
+	ctx.fillStyle = MAX_TEMP_COLOUR;
 	ctx.textBaseline = "top";
 	ctx.font = "16px Arial";
 	ctx.textAlign = "left";
@@ -242,6 +247,7 @@ function displayMainInfo(humidity, pressure, wind) {
 	ctx.closePath();
 	ctx.restore();
 }
+
 
 /*------------------------------------------------------------
 | Displays temperature on the main frame. In addition to 
@@ -293,27 +299,31 @@ function displayMainTemp(temp) {
 	ctx.restore();
 }
 
+
 /*------------------------------------------------------------
 | Displays the time in 12hr format on the main frame
 --------------------------------------------------------------*/
 
 function displayMainTime(time, day_num, display_settings) {
+
 	var time_y = 50;
 	var time_x = this.x + display_settings[DAYS_F[day_num]].offset_x;
+
 	var hour = util.getHour(time);
 
 	util.clean(time_x, time_y, CANVAS_WIDTH /2, DATE_BANNER_HEIGHT, ctx);
 	
 	ctx.save();
 	ctx.beginPath();
-	ctx.textBaseline = "hanging";
+	ctx.textBaseline = 'top';
 	ctx.textAlign = "left";
 	ctx.font = "16px Arial";
-	ctx.fillStyle = "#878787";
+	ctx.fillStyle = MAX_TEMP_COLOUR;
 	ctx.fillText(hour, time_x, time_y);
 	ctx.closePath();
 	ctx.restore();
 }
+
 
 /*------------------------------------------------------------
 | Displays weather icons on main frame. The icon settings
@@ -349,8 +359,8 @@ main.displayWeatherIcon = displayMainWeatherIcon.bind(main);
 
 
 module.exports = function(canvas) {
+	
 	canvas = canvas;
-	console.log(canvas);
 	ctx = canvas.getContext('2d');
 	return {main: main, bottom: bottom};
 };
