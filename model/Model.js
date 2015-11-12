@@ -34,13 +34,13 @@ Forecast_Model.prototype.init = function(city) {
 	var forecast_url = 'http://api.openweathermap.org/data/2.5/forecast?units=metric&q=' + city + '&APPID=' + API_KEY;
 	
 	var handleForecast = function() {
+		
 		var raw_forecast;
 		try {
 			raw_forecast = JSON.parse(this.responseText).list;
 		}
 		catch (exception) {
-			// this.controller.reportError()
-			console.log(exception);
+			throw "ERROR: Unable to parse Open Weather API response";
 		}
 
 		self.week_forecast = util.processWeekForecast(raw_forecast);
@@ -60,8 +60,7 @@ Forecast_Model.prototype.init = function(city) {
 			self.current_forecast = util.processCurrentForecast(JSON.parse(this.responseText));
 		}
 		catch (exception) {
-			//controller.reportError("Can't Parse Open Weather Response");
-			console.log('can not parse current weather response');
+			throw 'ERROR: Can not parse current weather response';
 		}
 
 		var forecast_req = new XMLHttpRequest();
@@ -75,7 +74,7 @@ Forecast_Model.prototype.init = function(city) {
 	weather_req.open("GET", weather_url, true);
 	weather_req.addEventListener('load', handleWeather);
 	weather_req.addEventListener('error', function(evt){
-		console.log('Weather call error');
+		throw 'ERROR: Unable to get weather data from Open Weather API';
 	});
 	weather_req.send();
 };
@@ -148,10 +147,6 @@ Forecast_Model.prototype.getForecastMax = function() {
 Forecast_Model.prototype.getWeekForecast = function() {
 
 	var forecast = util.cloneArray(this.week_forecast);
-
-	if (forecast.length < 5) {
-		throw 'ERROR: Week Forecast Incomplete';
-	}
 
 	/*----------------------------------------------------
 	| Check if earliest data is for today. If it is fore

@@ -108,10 +108,10 @@ function createFramelets(canvas, frame) {
 
 	var day_num = new Date().getDay();
 
-	var framelet = {};
+	
 	var framelets = [];
 	for (var index = 0; index <= FRAMELET_NUM; index++) {		
-
+		var framelet = {};
 		framelet.y = frame.y;
 		framelet.x = framelet_width * index + frame.x;
 

@@ -66,7 +66,13 @@ function getIDCondition(id) {
 		return "misty";
 	}
 
-	throw 'ID' + id + ' is Unknow';
+	else if (id <= 600 && id <= 622) {
+		return "snow";
+	}
+	else {
+		throw 'Weather ID: ' + id + ' is Unknown';
+	}
+	
 }
 
 

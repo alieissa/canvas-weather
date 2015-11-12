@@ -126,7 +126,7 @@ function renderBottomFrame (day_forecast_highs) {
 	/*jshint validthis: true*/
 
 	var self = this;
-	
+	console.log(day_forecast_highs);
 	var framelets = self.forecast_view.getBottomFrame().framelets;
 	
 	day_forecast_highs.forEach(function(day_high, index, array) {

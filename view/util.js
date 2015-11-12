@@ -1,4 +1,4 @@
-
+var BACKGROUND_COLOUR = 'white';
 /*----------------------------------------------------------
 | Starting from point (x,y) paints an area of width 'width' 
 | and height 'height' white. Note white is the color 
@@ -9,7 +9,7 @@ function clean(x, y, width, height, ctx) {
 
 	ctx.save();
 	ctx.beginPath();
-	ctx.fillStyle = "white";
+	ctx.fillStyle = BACKGROUND_COLOUR;
 	ctx.fillRect(x , y , width, height);
 	ctx.fill();
 	ctx.closePath();

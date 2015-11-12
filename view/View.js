@@ -98,12 +98,7 @@ Forecast_View.prototype.plotDayForecast = function(day_forecast) {
 		temps.push(hour_forecast.temp_max);
 	});
 
-	if(hours.length !== temps.length) {
-		// Should throw an error here
-		console.log(" Error: hours and temperature length must match");
-		return;
-	}
-
+	
 	this.chart.plot(hours, temps, this.forecast_max, this.forecast_min);
 };
 
